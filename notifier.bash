@@ -16,23 +16,25 @@ Notifications=(
     "going to home"     #17 am
 )
 
-# Calculate time point day
-DateNow=$(date -d "$(date '+%Y-%m-%d %H')" +%s)
 DateStart=$(date -d "$(date +%Y-%m-%d)" +%s)
-DateDiff=$(($DateNow-$DateStart))
-DateTimePoint=$(( ($DateDiff/SECONDS_IN_HOUR)-$DATE_START_WORK ))
 
-# Create text notifications from array by time point
-NotifyText=${Notifications[$DateTimePoint]}
-
-# Check if index of notifications is within the limits allowed
-NotificationsLength=${#Notifications[*]}
-if [ $DateTimePoint -lt 0 ] || [ $DateTimePoint -gt $NotificationsLength ]; then
-    exit 1
-fi
-
-# Send notification to alert
+# Lifecicle notifier 
 while true; do
+	# Calculate time point day
+	DateNow=$(date -d "$(date '+%Y-%m-%d %H')" +%s)
+	DateDiff=$(($DateNow-$DateStart))
+	DateTimePoint=$(( ($DateDiff/SECONDS_IN_HOUR)-$DATE_START_WORK ))
+
+	# Create text notifications from array by time point
+	NotifyText=${Notifications[$DateTimePoint]}
+
+	# Check if index of notifications is within the limits allowed
+	NotificationsLength=${#Notifications[*]}
+	if [ $DateTimePoint -lt 0 ] || [ $DateTimePoint -gt $NotificationsLength ]; then
+		exit 1
+	fi
+	
+	# Send notification to alert
     notify-send -i info "Hey `echo $USER`" "Time to $NotifyText ☺"
     sleep $SECONDS_IN_HALF_HOUR
 done
